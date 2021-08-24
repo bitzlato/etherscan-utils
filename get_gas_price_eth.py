@@ -10,7 +10,7 @@ import time
 
 import requests
 
-logging.basicConfig(format='%(levelname)s:\t%(message)s', level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)s\t\t| %(message)s', level=logging.DEBUG)
 
 # API key for https://nownodes.io/
 secret_api_key = os.environ.get('ETHERSCAN_API_KEY')
@@ -30,10 +30,12 @@ def get_accounts_from_file():
                 continue
             accounts.append(line.strip())
 
+    logging.info("got " + str(len(set(accounts))) + " accounts")
     return set(accounts)
 
 
 def get_account_fee(account):
+    logging.debug("----------------------------------------------")
     logging.info("calculate fee for account " + account)
 
     params = dict(
@@ -47,7 +49,15 @@ def get_account_fee(account):
     )
     resp = requests.get(url=url, params=params)
     data = resp.json()
-    logging.debug("records returned: " + str(len(data["result"])))
+
+    logging.debug("server resp is '" + data["message"] + "'")
+
+    if "result" not in data:
+        logging.critical("incorrect server response: " + str(data))
+        exit(1)
+    if data["message"] == "NOTOK":
+        logging.critical("error processing request, resp: " + str(data))
+        exit(1)
 
     fee = 0
     for item in data["result"]:
@@ -55,7 +65,7 @@ def get_account_fee(account):
         gas_used = int(item["gasUsed"], 16)
 
         fee += gas_price * gas_used
-        # logging.debug("fee: " + str(fee))
+        logging.debug(str(gas_price) + ", " + str(gas_used) + ", " + str(fee))
 
     return fee
 
@@ -69,9 +79,8 @@ def main(argv):
     results = {}
     for account in accounts:
         results[account] = get_account_fee(account)
+        logging.info("result is " + str(results[account]))
         time.sleep(0.2)
-
-    logging.info(results)
 
     with open("result.txt", "w") as csv_file:
         for result in results:
