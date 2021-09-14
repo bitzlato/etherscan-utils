@@ -18,7 +18,7 @@ def main(argv):
         description=textwrap.dedent('''\
             Etherscan utility for fetching gas used by a contract.\n
             Note that environment variable ETHERSCAN_KEY must be set
-            '''))
+        '''))
     parser.add_argument('--version', action='version', version='%(prog)s 0.1')
     parser.add_argument('-b', default=10, type=int, metavar='blocks_count',
                         help='sets number of analyzed blocks (10 by default)')
@@ -26,15 +26,14 @@ def main(argv):
 
     args = vars(parser.parse_args(argv))
 
+    # begin processing
     print('contract_address', 'min', 'med', 'max', sep='\t')
     for address in args['addresses']:
-        transactions = etherscan.account_normal_transactions(address)
+        transactions = etherscan.account_token_transfers(address)
+        latest_transactions = transactions[-int(args['b']):]
 
-        successTx = [x for x in transactions if x['isError'] == '0']
-        processTx = successTx[-int(args['b']):]
-
-        logging.debug('process ' + str(len(processTx)) + ' latest transactions')
-        gas_used_list = [int(x['gasUsed']) for x in processTx]
+        logging.debug('process ' + str(len(latest_transactions)) + ' latest transactions')
+        gas_used_list = [int(x['gasUsed']) for x in latest_transactions]
         print(address, min(gas_used_list), int(statistics.median(
             gas_used_list)), max(gas_used_list), sep='\t')
 

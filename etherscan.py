@@ -10,6 +10,14 @@ ETH_CURRENCY_PARTS = 1_000_000_000_000_000_000
 url = "https://api.etherscan.io/api"
 
 
+def get_env_apikey():
+    apikey = os.environ.get('ETHERSCAN_KEY')
+    if apikey == None or apikey == "":
+        logging.critical("ETHERSCAN_KEY environment variable is not set!\n")
+        exit(1)
+    return apikey
+
+
 def __test_resp(data):
     if 'result' not in data or 'message' not in data:
         logging.critical("incorrect server response: " + str(data))
@@ -22,18 +30,18 @@ def __test_resp(data):
     return True
 
 
-def get_env_apikey():
-    apikey = os.environ.get('ETHERSCAN_KEY')
-    if apikey == None or apikey == "":
-        logging.critical("ETHERSCAN_KEY environment variable is not set!\n")
+def __make_request(params):
+    resp = requests.get(url=url, params=params)
+    if not __test_resp(resp.json()):
         exit(1)
-    return apikey
+
+    return resp.json()['result']
 
 
+# https://docs.etherscan.io/api-endpoints/accounts#get-a-list-of-normal-transactions-by-address
 def account_normal_transactions(account):
     apikey = get_env_apikey()
-
-    params = dict(
+    return __make_request(dict(
         module="account",
         action="txlist",
         address=account,
@@ -41,14 +49,16 @@ def account_normal_transactions(account):
         endblock=99999999,
         sort="asc",
         apikey=apikey
-    )
-    resp = requests.get(url=url, params=params)
-
-    if not __test_resp(resp.json()):
-        exit(1)
-
-    return resp.json()['result']
+    ))
 
 
-def contract_fees(contract):
-    key = get_env_apikey()
+# https://docs.etherscan.io/api-endpoints/accounts#get-a-list-of-erc20-token-transfer-events-by-address
+def account_token_transfers(account):
+    apikey = get_env_apikey()
+    return __make_request(dict(
+        module="account",
+        action="tokentx",
+        contractaddress=account,
+        sort="asc",
+        apikey=apikey
+    ))
