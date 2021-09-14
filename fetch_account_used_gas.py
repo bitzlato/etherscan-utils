@@ -9,6 +9,8 @@ import sys
 import time
 import requests
 
+import etherscan
+
 from decimal import *
 
 getcontext().prec = 18
@@ -39,23 +41,14 @@ def get_accounts_from_file():
 
 
 def get_account_fees(account):
-    params = dict(
-        module="account",
-        action="txlist",
-        address=account,
-        startblock=0,
-        endblock=99999999,
-        sort="asc",
-        apikey=secret_api_key
-    )
-    resp = requests.get(url=url, params=params)
-    data = resp.json()
+    data = etherscan.account_fees(secret_api_key, url, account)
 
     logging.info("server resp is '" + data["message"] + "'")
 
     if "result" not in data:
         logging.critical("incorrect server response: " + str(data))
         exit(1)
+
     if data["message"] == "NOTOK":
         logging.critical("error processing request, resp: " + str(data))
         exit(1)
