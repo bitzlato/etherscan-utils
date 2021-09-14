@@ -10,15 +10,29 @@ ETH_CURRENCY_PARTS = 1_000_000_000_000_000_000
 url = "https://api.etherscan.io/api"
 
 
+def __test_resp(data):
+    if 'result' not in data or 'message' not in data:
+        logging.critical("incorrect server response: " + str(data))
+        return False
+
+    if data['message'] == "NOTOK":
+        logging.critical("error processing the request, resp: " + str(data))
+        return False
+
+    return True
+
+
 def get_env_apikey():
     apikey = os.environ.get('ETHERSCAN_KEY')
     if apikey == None or apikey == "":
-        logging.critical("API key must be set in env variable ETHERSCAN_API_KEY")
-        raise Exception("apikey not set in the environment")
+        logging.critical("ETHERSCAN_KEY environment variable is not set!\n")
+        exit(1)
     return apikey
 
 
-def account_fees(apikey, url, account):
+def account_normal_transactions(account):
+    apikey = get_env_apikey()
+
     params = dict(
         module="account",
         action="txlist",
@@ -29,4 +43,12 @@ def account_fees(apikey, url, account):
         apikey=apikey
     )
     resp = requests.get(url=url, params=params)
-    return resp.json()
+
+    if not __test_resp(resp.json()):
+        exit(1)
+
+    return resp.json()['result']
+
+
+def contract_fees(contract):
+    key = get_env_apikey()
