@@ -3,7 +3,7 @@
 Пример:
 
 ```
-> ETHERSCAN_KEY=123 ./fetch_used_gas -b 10 0x4dfd148b532e934a2a26ea65689cf6268753e130 0x1f9840a85d5af5bf1d1762f925bdaddc4201f984 0x1f9840a85d5af5bf1d1762f925bdaddc4201f984
+> ETHERSCAN_KEY=123 python3 fetch_contract_used_gas.py -b 10 0x4dfd148b532e934a2a26ea65689cf6268753e130 0x1f9840a85d5af5bf1d1762f925bdaddc4201f984 0x1f9840a85d5af5bf1d1762f925bdaddc4201f984
 
 contract_address min med max
 0x4dfd148b532e934a2a26ea65689cf6268753e130 50000 55000 60000
