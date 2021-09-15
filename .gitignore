@@ -1,4 +1,5 @@
 __pycache__
 .envrc
+.venv
 result.csv
 accounts_list.txt

@@ -3,7 +3,14 @@
 # Установка
 
 1. Иметь установленный `python3` и `pip3`
-2. `make install`
+2. Установить pipenv (https://pipenv.pypa.io/en/latest/) `pip3 install --user pipenv`
+3. Определить переменную окружения `export PIPENV_VENV_IN_PROJECT="enabled"` - так pipenv создаст venv в локальном каталоге, это удобнее. Проще всего для этого использовать direnv (https://direnv.net/), чтобы при переходе в каталог переменные настраивались автоматически
+4. Выполнить `pipenv install` - создаст окружение и установит зависимости
+5. `pipenv shell` - перейдет в настроенное окружение, где уже можно запустить скрипт
+
+## Обновление
+
+Для обновления зависимостей в venv выполнить `pipenv sync`
 
 ## fetch_contract_used_gas.py
 
