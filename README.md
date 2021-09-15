@@ -1,21 +1,31 @@
 # Набор утилит для работы с etherscan
 
-## fetch_contract_used_gas
+# fetch_contract_used_gas.py
 
 Собирает с etherscan N последних блоков (10 по-умолчанию, упралвяется через `-b`), сканирует, агрегирует и выдает аналитику по количеству газа использованного для указанных контрактных адресов.
 
-Пример:
+## Пример:
+
+Запуск:
 
 ```
-> ETHERSCAN_KEY=123 fetch_contract_used_gas.py 0x4dfd148b532e934a2a26ea65689cf6268753e130 0x1f9840a85d5af5bf1d1762f925bdaddc4201f984 0x1f9840a85d5af5bf1d1762f925bdaddc4201f984
-
-contract_address min med max
-0x4dfd148b532e934a2a26ea65689cf6268753e130 50000 55000 60000
-0x1f9840a85d5af5bf1d1762f925bdaddc4201f984 54000 58000 62000
-...
+> ETHERSCAN_KEY=ТВОЙ_КЛЮЧ ./fetch_contract_used_gas.py \
+  0x4dfd148b532e934a2a26ea65689cf6268753e130 \
+  0x1f9840a85d5af5bf1d1762f925bdaddc4201f984 \
+  0x1f9840a85d5af5bf1d1762f925bdaddc4201f984
 ```
 
-Аргументы:
+Выводит:
 
-`-b 10` - количество сканируемых блоков
-`остальные` - список контрактных адресов через пробел
+```
+contract_address	min	med	max
+0x4dfd148b532e934a2a26ea65689cf6268753e130	31351	51729	54135
+0x1f9840a85d5af5bf1d1762f925bdaddc4201f984	25506	90003	172574
+0x1f9840a85d5af5bf1d1762f925bdaddc4201f984	25506	90003	172574
+```
+
+## Подробнее
+
+```
+./fetch_contract_used_gas.py -h
+```
