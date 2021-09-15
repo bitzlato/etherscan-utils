@@ -1,13 +1,13 @@
 #!/usr/bin/env python3 
 
 import argparse
-import etherscan
 import logging
 import statistics
 import sys
 import textwrap
 
 from decimal import *
+from libs.etherscan import *
 
 getcontext().prec = 18
 
@@ -31,7 +31,7 @@ def main(argv):
     # begin processing
     print('contract_address', 'min', 'med', 'max', sep='\t')
     for address in args['addresses']:
-        transactions = etherscan.account_token_transfers(address)
+        transactions = account_token_transfers(address)
         latest_transactions = transactions[-int(args['b']):]
 
         logging.debug('process ' + str(len(latest_transactions)) + ' latest transactions')
