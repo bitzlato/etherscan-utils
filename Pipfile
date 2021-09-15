@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 requests = "*"
 autopep8 = "*"
+pytest = "*"
 
 [dev-packages]
 
