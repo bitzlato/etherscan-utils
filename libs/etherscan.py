@@ -53,12 +53,22 @@ def account_normal_transactions(account):
 
 
 # https://docs.etherscan.io/api-endpoints/accounts#get-a-list-of-erc20-token-transfer-events-by-address
-def account_token_transfers(account):
+def account_token_transfers(contract_address="", address=""):
     apikey = get_env_apikey()
-    return __make_request(dict(
+
+    params = dict(
         module="account",
         action="tokentx",
-        contractaddress=account,
         sort="asc",
         apikey=apikey
-    ))
+    )
+    if not contract_address and not address:
+        logging.critical("contract_address or address must be set!")
+        exit(1)
+
+    if contract_address:
+        params['contractaddress'] = contract_address
+    if address:
+        params['address'] = address
+
+    return __make_request(params)

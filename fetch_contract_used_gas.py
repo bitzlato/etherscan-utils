@@ -31,7 +31,7 @@ def main(argv):
     # begin processing
     print('contract_address', 'min', 'med', 'max', sep='\t')
     for address in args['addresses']:
-        transactions = account_token_transfers(address)
+        transactions = account_token_transfers(contract_address=address)
         latest_transactions = transactions[-int(args['b']):]
 
         logging.debug('process ' + str(len(latest_transactions)) + ' latest transactions')
