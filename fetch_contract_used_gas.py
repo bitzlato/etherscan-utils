@@ -1,4 +1,4 @@
-#!/usr/bin/env python3 
+#!/usr/bin/env python3
 
 import argparse
 import logging
@@ -29,14 +29,17 @@ def main(argv):
     args = vars(parser.parse_args(argv))
 
     # begin processing
-    print('contract_address', 'min', 'med', 'max', sep='\t')
+    print('token', 'contract_address', 'min', 'med', 'max', sep='\t')
     for address in args['addresses']:
         transactions = account_token_transfers(contract_address=address)
         latest_transactions = transactions[-int(args['b']):]
 
         logging.debug('process ' + str(len(latest_transactions)) + ' latest transactions')
+
         gas_used_list = [int(x['gasUsed']) for x in latest_transactions]
-        print(address, min(gas_used_list), int(statistics.median(
+        token_symbol = latest_transactions[0]['tokenSymbol']
+
+        print(token_symbol, address, min(gas_used_list), int(statistics.median(
             gas_used_list)), max(gas_used_list), sep='\t')
 
 
